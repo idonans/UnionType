@@ -1,9 +1,9 @@
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
-def siteUrl = 'https://github.com/idonans/Lang'
-def gitUrl = 'https://github.com/idonans/Lang.git'
-group = 'com.idonans.lang'
+def siteUrl = 'https://github.com/idonans/UnionType'
+def gitUrl = 'https://github.com/idonans/UnionType.git'
+group = 'com.idonans.uniontype'
 version = rootProject.ext.bcfg.ver.versionName
 install {
     repositories.mavenInstaller {
@@ -69,7 +69,7 @@ bintray {
     configurations = ['archives']
     pkg {
         repo = 'maven'
-        name = 'lang'
+        name = 'uniontype'
         websiteUrl = siteUrl
         vcsUrl = gitUrl
         licenses = ['Apache-2.0']
