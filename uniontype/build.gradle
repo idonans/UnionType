@@ -28,13 +28,11 @@ android {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-    api rootProject.ext.bcfg.deps.idonans_appcontext
     api rootProject.ext.bcfg.deps.androidx_appcompat
-    api rootProject.ext.bcfg.deps.guava
-    api rootProject.ext.bcfg.deps.gson
+    api rootProject.ext.bcfg.deps.androidx_recyclerview
+    api rootProject.ext.bcfg.deps.idonans_appcontext
+    api rootProject.ext.bcfg.deps.idonans_lang
     api rootProject.ext.bcfg.deps.timber
-    api rootProject.ext.bcfg.deps.rxbinding2
-    api rootProject.ext.bcfg.deps.okhttp
 }
 
 // apply from: ('bintray.gradle')

@@ -55,6 +55,9 @@ bcfg.deps.fresco_support_webp = "com.facebook.fresco:webpsupport:1.11.0"
 bcfg.deps.fresco_okhttp3 = "com.facebook.fresco:imagepipeline-okhttp3:1.11.0"
 
 bcfg.deps.idonans_appcontext = "com.idonans.appcontext:appcontext:0.1.4"
+bcfg.deps.idonans_systeminsets = "com.idonans.systeminsets:systeminsets:0.1.0"
+bcfg.deps.idonans_backstack = "com.idonans.backstack:backstack:0.1.6"
+bcfg.deps.idonans_lang = "com.idonans.lang:lang:0.1.4"
 
 bcfg.addRepos = this.&addRepos
 
