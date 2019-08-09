@@ -10,15 +10,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.common.base.Preconditions;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-
-import timber.log.Timber;
 
 public class UnionTypeAdapter extends RecyclerView.Adapter<UnionTypeViewHolder> {
 
-    private RangeArrayList<UnionTypeItemObject> mData = new RangeArrayList<>();
+    private GroupArrayList mData = new GroupArrayList();
     private Host mHost;
     private UnionTypeMapper mUnionTypeMapper;
 
@@ -82,15 +78,25 @@ public class UnionTypeAdapter extends RecyclerView.Adapter<UnionTypeViewHolder> 
 
     @Nullable
     public UnionTypeItemObject getItem(int position) {
-        int size = mData.size();
-        if (position >= 0 && position < size) {
-            return mData.get(position);
-        }
-        return null;
+        return mData.getItem(position);
+    }
+
+    @Nullable
+    public UnionTypeItemObject getGroupItem(int group, int positionInGroup) {
+        return mData.getGroupItem(group, positionInGroup);
+    }
+
+    public int getGroupPositionStart(int group) {
+        return mData.getGroupPositionStart(group);
+    }
+
+    @Nullable
+    public int[] getGroupAndPosition(int position) {
+        return mData.getGroupAndPosition(position);
     }
 
     @NonNull
-    public List<UnionTypeItemObject> getData() {
+    public GroupArrayList getData() {
         return mData;
     }
 
@@ -98,30 +104,30 @@ public class UnionTypeAdapter extends RecyclerView.Adapter<UnionTypeViewHolder> 
      * {@linkplain DeepDiff}
      * {@linkplain DiffUtil}
      */
-    public void setData(@Nullable Collection<UnionTypeItemObject> data) {
-        List<UnionTypeItemObject> oldData = getData();
+    public void setData(@Nullable GroupArrayList data) {
+        GroupArrayList oldData = getData();
         if (data == null) {
-            mData = new RangeArrayList<>();
+            mData = new GroupArrayList();
         } else {
-            mData = new RangeArrayList<>(data);
+            mData = new GroupArrayList(data);
         }
-        List<UnionTypeItemObject> newData = getData();
+        GroupArrayList newData = getData();
 
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
             @Override
             public int getOldListSize() {
-                return oldData.size();
+                return oldData.getItemCount();
             }
 
             @Override
             public int getNewListSize() {
-                return newData.size();
+                return newData.getItemCount();
             }
 
             @Override
             public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                UnionTypeItemObject oldItemObject = oldData.get(oldItemPosition);
-                UnionTypeItemObject newItemObject = newData.get(newItemPosition);
+                UnionTypeItemObject oldItemObject = oldData.getItem(oldItemPosition);
+                UnionTypeItemObject newItemObject = newData.getItem(newItemPosition);
                 if (oldItemObject == null || newItemObject == null) {
                     return false;
                 }
@@ -130,8 +136,8 @@ public class UnionTypeAdapter extends RecyclerView.Adapter<UnionTypeViewHolder> 
 
             @Override
             public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                UnionTypeItemObject oldItemObject = oldData.get(oldItemPosition);
-                UnionTypeItemObject newItemObject = newData.get(newItemPosition);
+                UnionTypeItemObject oldItemObject = oldData.getItem(oldItemPosition);
+                UnionTypeItemObject newItemObject = newData.getItem(newItemPosition);
                 if (oldItemObject == null || newItemObject == null) {
                     return false;
                 }
@@ -141,55 +147,81 @@ public class UnionTypeAdapter extends RecyclerView.Adapter<UnionTypeViewHolder> 
         diffResult.dispatchUpdatesTo(this);
     }
 
-    public void insertLastData(@Nullable Collection<UnionTypeItemObject> items) {
-        insertData(getItemCount(), items);
+    public boolean insertGroupItems(int group, int positionInGroup, Collection<UnionTypeItemObject> items) {
+        int[] positionAndSize = mData.insertGroupItems(group, positionInGroup, items);
+        if (positionAndSize != null) {
+            notifyItemRangeInserted(positionAndSize[0], positionAndSize[1]);
+            return true;
+        }
+        return false;
     }
 
-    public void insertFirstData(@Nullable Collection<UnionTypeItemObject> items) {
-        insertData(0, items);
+    public boolean appendGroupItems(int group, Collection<UnionTypeItemObject> items) {
+        int[] positionAndSize = mData.appendGroupItems(group, items);
+        if (positionAndSize != null) {
+            notifyItemRangeInserted(positionAndSize[0], positionAndSize[1]);
+            return true;
+        }
+        return false;
     }
 
-    public void insertData(int position, @Nullable Collection<UnionTypeItemObject> items) {
-        if (items == null || items.isEmpty()) {
-            return;
+    public boolean clearGroupItems(int group) {
+        int[] positionAndSize = mData.clearGroupItems(group);
+        if (positionAndSize != null) {
+            notifyItemRangeRemoved(positionAndSize[0], positionAndSize[1]);
+            return true;
         }
-
-        int size = items.size();
-        int count = getItemCount();
-        if (position < 0 || position > count) {
-            Timber.e(new IllegalArgumentException(), "invalid position:%s, item count:%s", position, count);
-            return;
-        }
-        mData.addAll(position, items);
-        notifyItemRangeInserted(position, size);
+        return false;
     }
 
-    public void removeData(int position) {
-        removeData(position, 1);
+    public boolean removeGroupItem(int group, int positionInGroup) {
+        int[] positionAndSize = mData.removeGroupItem(group, positionInGroup);
+        if (positionAndSize != null) {
+            notifyItemRangeRemoved(positionAndSize[0], positionAndSize[1]);
+            return true;
+        }
+        return false;
     }
 
-    public void removeData(int position, int size) {
-        if (size <= 0) {
-            return;
+    public boolean removeGroupItems(int group, int positionInGroup, int size) {
+        int[] positionAndSize = mData.removeGroupItems(group, positionInGroup, size);
+        if (positionAndSize != null) {
+            notifyItemRangeRemoved(positionAndSize[0], positionAndSize[1]);
+            return true;
         }
+        return false;
+    }
 
-        int count = getItemCount();
-        if (position < 0 || position >= count) {
-            Timber.e(new IllegalArgumentException(), "invalid position:%s, item count:%s", position, count);
-            return;
+    public boolean removeItem(int position) {
+        int[] positionAndSize = mData.removeItem(position);
+        if (positionAndSize != null) {
+            notifyItemRangeRemoved(positionAndSize[0], positionAndSize[1]);
+            return true;
         }
-        if (position + size > count) {
-            Timber.e(new IllegalArgumentException(), "invalid position:%s, size:%s, item count:%s", position, size, count);
-            return;
-        }
+        return false;
+    }
 
-        mData.removeRange(position, position + size);
-        notifyItemRangeRemoved(position, size);
+    public boolean removeItems(int position, GroupArrayList.Filter filter) {
+        int[] positionAndSize = mData.removeItems(position, filter);
+        if (positionAndSize != null) {
+            notifyItemRangeRemoved(positionAndSize[0], positionAndSize[1]);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean move(int fromPosition, int toPosition) {
+        int[] movePosition = mData.move(fromPosition, toPosition);
+        if (movePosition != null) {
+            notifyItemMoved(movePosition[0], movePosition[1]);
+            return true;
+        }
+        return false;
     }
 
     @Override
     public int getItemCount() {
-        return mData.size();
+        return mData.getItemCount();
     }
 
     /**
@@ -226,24 +258,6 @@ public class UnionTypeAdapter extends RecyclerView.Adapter<UnionTypeViewHolder> 
 
     public void setOnLoadNextPageListener(OnLoadNextPageListener listener) {
         mOnLoadNextPageListener = listener;
-    }
-
-    private static class RangeArrayList<E> extends ArrayList<E> {
-        public RangeArrayList(int initialCapacity) {
-            super(initialCapacity);
-        }
-
-        public RangeArrayList() {
-        }
-
-        public RangeArrayList(@NonNull Collection c) {
-            super(c);
-        }
-
-        @Override
-        public void removeRange(int fromIndex, int toIndex) {
-            super.removeRange(fromIndex, toIndex);
-        }
     }
 
 }
