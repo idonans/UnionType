@@ -13,6 +13,18 @@ public class GroupArrayList {
         mData = new SparseArrayCompat<>();
     }
 
+    public GroupArrayList(GroupArrayList input) {
+        mData = new SparseArrayCompat<>();
+        if (input != null) {
+            int size = input.mData.size();
+            for (int i = 0; i < size; i++) {
+                int key = mData.keyAt(i);
+                ArrayList<UnionTypeItemObject> groupItems = mData.valueAt(i);
+                mData.put(key, new ArrayListWrapper(groupItems));
+            }
+        }
+    }
+
     /**
      * 获得指定组下的数据数量，如果该组下没有数据，返回0．
      */
@@ -35,7 +47,7 @@ public class GroupArrayList {
      * 使用示例：
      * <code>
      *
-     * int[] positionAndSize = mAdapter.getData().clearGroupItems(GROUP_DATA);
+     * int[] positionAndSize = clearGroupItems(GROUP_DATA);
      * if(positionAndSize != null) {
      *     mAdapter.notifyItemRangeRemoved(positionAndSize[0], positionAndSize[1]);
      * }
@@ -94,7 +106,7 @@ public class GroupArrayList {
      * 使用示例：
      * <code>
      *
-     * int[] positionAndSize = mAdapter.getData().removeGroupItem(GROUP_DATA, 3);
+     * int[] positionAndSize = removeGroupItem(GROUP_DATA, 3);
      * if(positionAndSize != null) {
      *     mAdapter.notifyItemRangeRemoved(positionAndSize[0], positionAndSize[1]);
      * }
@@ -134,7 +146,7 @@ public class GroupArrayList {
      * 使用示例：
      * <code>
      *
-     * int[] positionAndSize = mAdapter.getData().removeGroupItems(GROUP_DATA, 3, 2); // 删除该组数据的第3项和第4项
+     * int[] positionAndSize = removeGroupItems(GROUP_DATA, 3, 2); // 删除该组数据的第3项和第4项
      * if(positionAndSize != null) {
      *     mAdapter.notifyItemRangeRemoved(positionAndSize[0], positionAndSize[1]);
      * }
@@ -188,7 +200,7 @@ public class GroupArrayList {
      * 使用示例：
      * <code>
      *
-     * int[] groupAndPosition = mAdapter.getData().getGroupAndPosition(13);
+     * int[] groupAndPosition = getGroupAndPosition(13);
      * if(groupAndPosition != null) {
      *     int group = groupAndPosition[0];
      *     int positionInGroup = groupAndPosition[1];
@@ -236,7 +248,7 @@ public class GroupArrayList {
      * 使用示例：
      * <code>
      *
-     * int[] positionAndSize = mAdapter.getData().removeItem(13);
+     * int[] positionAndSize = removeItem(13);
      * if(positionAndSize != null) {
      *     mAdapter.notifyItemRangeRemoved(positionAndSize[0], positionAndSize[1]);
      * }
@@ -265,7 +277,7 @@ public class GroupArrayList {
      * 使用示例：
      * <code>
      *
-     * int[] positionAndSize = mAdapter.getData().removeItem(13, filter);
+     * int[] positionAndSize = removeItem(13, filter);
      * if(positionAndSize != null) {
      *     mAdapter.notifyItemRangeRemoved(positionAndSize[0], positionAndSize[1]);
      * }
@@ -324,7 +336,7 @@ public class GroupArrayList {
      * 使用示例：
      * <code>
      *
-     * int[] movePosition = mAdapter.getData().move(fromPosition, toPosition);
+     * int[] movePosition = move(fromPosition, toPosition);
      * if (movePosition != null) {
      *     mAdapter.notifyItemMoved(movePosition[0], movePosition[1]);
      * }
@@ -435,7 +447,7 @@ public class GroupArrayList {
      * 使用示例：
      * <code>
      *
-     * int[] positionAndSize = mAdapter.getData().clearAll();
+     * int[] positionAndSize = clearAll();
      * if(positionAndSize != null) {
      *     mAdapter.notifyItemRangeRemoved(positionAndSize[0], positionAndSize[1]);
      * }
@@ -456,9 +468,9 @@ public class GroupArrayList {
         int count = 0;
         int size = mData.size();
         for (int i = 0; i < size; i++) {
-            Object groupItems = mData.valueAt(i);
+            ArrayList<UnionTypeItemObject> groupItems = mData.valueAt(i);
             if (groupItems != null) {
-                count += ((ArrayList) groupItems).size();
+                count += groupItems.size();
             }
         }
         return count;
@@ -486,7 +498,7 @@ public class GroupArrayList {
      * 使用示例：
      * <code>
      *
-     * int[] positionAndSize = mAdapter.getData().insertGroupItems(GROUP_DATA, 2, items);
+     * int[] positionAndSize = insertGroupItems(GROUP_DATA, 2, items);
      * if(positionAndSize != null) {
      *     mAdapter.notifyItemRangeInserted(positionAndSize[0], positionAndSize[1]);
      * }
@@ -530,7 +542,7 @@ public class GroupArrayList {
      * 使用示例：
      * <code>
      *
-     * int[] positionAndSize = mAdapter.getData().appendGroupItems(GROUP_DATA, items);
+     * int[] positionAndSize = appendGroupItems(GROUP_DATA, items);
      * if(positionAndSize != null) {
      *     mAdapter.notifyItemRangeInserted(positionAndSize[0], positionAndSize[1]);
      * }
