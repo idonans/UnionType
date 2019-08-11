@@ -18,8 +18,8 @@ public class GroupArrayList {
         if (input != null) {
             int size = input.mData.size();
             for (int i = 0; i < size; i++) {
-                int key = mData.keyAt(i);
-                ArrayList<UnionTypeItemObject> groupItems = mData.valueAt(i);
+                int key = input.mData.keyAt(i);
+                ArrayList<UnionTypeItemObject> groupItems = input.mData.valueAt(i);
                 mData.put(key, new ArrayListWrapper(groupItems));
             }
         }
