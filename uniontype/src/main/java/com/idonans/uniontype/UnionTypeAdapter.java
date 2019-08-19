@@ -6,11 +6,14 @@ import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListUpdateCallback;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.common.base.Preconditions;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class UnionTypeAdapter extends RecyclerView.Adapter<UnionTypeViewHolder> {
 
@@ -145,6 +148,74 @@ public class UnionTypeAdapter extends RecyclerView.Adapter<UnionTypeViewHolder> 
             }
         });
         diffResult.dispatchUpdatesTo(this);
+    }
+
+    public void setGroupItems(int group, Collection<UnionTypeItemObject> items) {
+        List<UnionTypeItemObject> groupItemsOld = new ArrayList<>();
+        List<UnionTypeItemObject> groupItemsNew = new ArrayList<>();
+
+        List<UnionTypeItemObject> groupItemsOriginal = mData.getGroupItems(group);
+        if (groupItemsOriginal != null) {
+            groupItemsOld.addAll(groupItemsOriginal);
+        }
+        if (items != null) {
+            groupItemsNew.addAll(items);
+        }
+
+        int groupPositionStart = mData.getGroupPositionStart(group);
+        mData.setGroupItems(group, items);
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return groupItemsOld.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return groupItemsNew.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                UnionTypeItemObject oldItemObject = groupItemsOld.get(oldItemPosition);
+                UnionTypeItemObject newItemObject = groupItemsNew.get(newItemPosition);
+                if (oldItemObject == null || newItemObject == null) {
+                    return false;
+                }
+                return oldItemObject.isSameItem(newItemObject);
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                UnionTypeItemObject oldItemObject = groupItemsOld.get(oldItemPosition);
+                UnionTypeItemObject newItemObject = groupItemsNew.get(newItemPosition);
+                if (oldItemObject == null || newItemObject == null) {
+                    return false;
+                }
+                return oldItemObject.isSameContent(newItemObject);
+            }
+        });
+        diffResult.dispatchUpdatesTo(new ListUpdateCallback() {
+            @Override
+            public void onInserted(int position, int count) {
+                notifyItemRangeInserted(groupPositionStart + position, count);
+            }
+
+            @Override
+            public void onRemoved(int position, int count) {
+                notifyItemRangeRemoved(groupPositionStart + position, count);
+            }
+
+            @Override
+            public void onMoved(int fromPosition, int toPosition) {
+                notifyItemMoved(groupPositionStart + fromPosition, groupPositionStart + toPosition);
+            }
+
+            @Override
+            public void onChanged(int position, int count, @Nullable Object payload) {
+                notifyItemRangeChanged(groupPositionStart + position, count, payload);
+            }
+        });
     }
 
     public boolean insertGroupItems(int group, int positionInGroup, Collection<UnionTypeItemObject> items) {

@@ -1,9 +1,11 @@
 package com.idonans.uniontype;
 
+import androidx.annotation.Nullable;
 import androidx.collection.SparseArrayCompat;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class GroupArrayList {
 
@@ -23,6 +25,11 @@ public class GroupArrayList {
                 mData.put(key, new ArrayListWrapper(groupItems));
             }
         }
+    }
+
+    @Nullable
+    public List<UnionTypeItemObject> getGroupItems(int group) {
+        return mData.get(group);
     }
 
     /**
