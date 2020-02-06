@@ -30,12 +30,22 @@ public interface Host {
 
     class Factory {
 
-        public static Host create(Fragment fragment, RecyclerView recyclerView, UnionTypeAdapter adapter) {
+        public static Host create(@NonNull Fragment fragment,
+                                  @NonNull RecyclerView recyclerView,
+                                  @NonNull UnionTypeAdapter adapter) {
             return new FragmentHost(fragment, recyclerView, adapter);
         }
 
-        public static Host create(Activity activity, RecyclerView recyclerView, UnionTypeAdapter adapter) {
+        public static Host create(@NonNull Activity activity,
+                                  @NonNull RecyclerView recyclerView,
+                                  @NonNull UnionTypeAdapter adapter) {
             return new ActivityHost(activity, recyclerView, adapter);
+        }
+
+        public static Host create(@NonNull Host baseHost,
+                                  @NonNull RecyclerView recyclerView,
+                                  @NonNull UnionTypeAdapter adapter) {
+            return new HostWrapper(baseHost, recyclerView, adapter);
         }
 
     }
@@ -139,6 +149,35 @@ public interface Host {
                 inflater = LayoutInflater.from(ContextUtil.getContext());
             }
             return inflater;
+        }
+
+    }
+
+    class HostWrapper extends BaseHost {
+
+        private final Host mHost;
+
+        public HostWrapper(Host host, RecyclerView recyclerView, UnionTypeAdapter adapter) {
+            super(recyclerView, adapter);
+            mHost = host;
+        }
+
+        @Nullable
+        @Override
+        public Activity getActivity() {
+            return mHost.getActivity();
+        }
+
+        @Nullable
+        @Override
+        public Fragment getFragment() {
+            return mHost.getFragment();
+        }
+
+        @NonNull
+        @Override
+        public LayoutInflater getLayoutInflater() {
+            return mHost.getLayoutInflater();
         }
 
     }
