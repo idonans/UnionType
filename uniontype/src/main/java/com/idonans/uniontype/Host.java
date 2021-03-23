@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.idonans.lang.util.ContextUtil;
+import com.idonans.core.util.ContextUtil;
 
 public interface Host {
 
