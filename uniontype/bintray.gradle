@@ -10,7 +10,7 @@ install {
         pom {
             project {
                 packaging 'aar'
-                name 'android application context library'
+                name 'android union type library'
                 url siteUrl
                 licenses {
                     license {
