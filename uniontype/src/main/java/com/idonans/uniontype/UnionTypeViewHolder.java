@@ -20,6 +20,6 @@ public abstract class UnionTypeViewHolder extends RecyclerView.ViewHolder {
         this.host = host;
     }
 
-    public abstract <T> void onBind(int position, @NonNull T itemObject);
+    public abstract void onBind(int position, @NonNull Object itemObject);
 
 }
