@@ -6,7 +6,7 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public abstract class UnionTypeViewHolder<T> extends RecyclerView.ViewHolder {
+public abstract class UnionTypeViewHolder extends RecyclerView.ViewHolder {
 
     @NonNull
     public final Host host;
@@ -20,6 +20,6 @@ public abstract class UnionTypeViewHolder<T> extends RecyclerView.ViewHolder {
         this.host = host;
     }
 
-    public abstract void onBind(int position, T itemObject);
+    public abstract <T> void onBind(int position, @NonNull T itemObject);
 
 }

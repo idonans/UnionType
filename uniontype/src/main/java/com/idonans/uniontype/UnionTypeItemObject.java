@@ -8,12 +8,12 @@ import java.util.Objects;
  * {@linkplain DeepDiff}
  * {@linkplain androidx.recyclerview.widget.DiffUtil}
  */
-public class UnionTypeItemObject<T> {
+public class UnionTypeItemObject {
 
     public final int unionType;
-    public T itemObject;
+    public Object itemObject;
 
-    public UnionTypeItemObject(int unionType, T itemObject) {
+    public UnionTypeItemObject(int unionType, Object itemObject) {
         this.unionType = unionType;
         this.itemObject = itemObject;
     }
@@ -54,7 +54,8 @@ public class UnionTypeItemObject<T> {
         return false;
     }
 
-    public static <T> UnionTypeItemObject<T> valueOf(int unionType, T itemObject) {
+    public static UnionTypeItemObject valueOf(int unionType, Object itemObject) {
         return new UnionTypeItemObject(unionType, itemObject);
     }
+
 }

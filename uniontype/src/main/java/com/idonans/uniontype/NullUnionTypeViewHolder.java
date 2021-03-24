@@ -10,14 +10,14 @@ import androidx.annotation.NonNull;
 /**
  * 空占位, 宽度与高度都是 0.
  */
-public class NullUnionTypeViewHolder extends UnionTypeViewHolder<Object> {
+public class NullUnionTypeViewHolder extends UnionTypeViewHolder {
 
     public NullUnionTypeViewHolder(@NonNull Host host) {
         super(host, createNullView(host.getRecyclerView().getContext()));
     }
 
     @Override
-    public void onBind(int position, Object itemObject) {
+    public void onBind(int position, @NonNull Object itemObject) {
     }
 
     private static View createNullView(Context context) {
