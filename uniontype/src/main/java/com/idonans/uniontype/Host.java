@@ -52,19 +52,23 @@ public interface Host {
 
     abstract class BaseHost implements Host {
 
+        @NonNull
         private final RecyclerView mRecyclerView;
+        @NonNull
         private final UnionTypeAdapter mAdapter;
 
-        protected BaseHost(RecyclerView recyclerView, UnionTypeAdapter adapter) {
+        protected BaseHost(@NonNull RecyclerView recyclerView, @NonNull UnionTypeAdapter adapter) {
             mRecyclerView = recyclerView;
             mAdapter = adapter;
         }
 
+        @NonNull
         @Override
         public UnionTypeAdapter getAdapter() {
             return mAdapter;
         }
 
+        @NonNull
         @Override
         public RecyclerView getRecyclerView() {
             return mRecyclerView;
@@ -75,11 +79,12 @@ public interface Host {
 
         private final Fragment mFragment;
 
-        public FragmentHost(Fragment fragment, RecyclerView recyclerView, UnionTypeAdapter adapter) {
+        public FragmentHost(Fragment fragment,
+                            @NonNull RecyclerView recyclerView,
+                            @NonNull UnionTypeAdapter adapter) {
             super(recyclerView, adapter);
             mFragment = fragment;
         }
-
 
         @Nullable
         @Override
@@ -96,6 +101,7 @@ public interface Host {
             return mFragment;
         }
 
+        @NonNull
         @Override
         public LayoutInflater getLayoutInflater() {
             LayoutInflater inflater = null;
@@ -122,7 +128,9 @@ public interface Host {
 
         private final Activity mActivity;
 
-        public ActivityHost(Activity activity, RecyclerView recyclerView, UnionTypeAdapter adapter) {
+        public ActivityHost(Activity activity,
+                            @NonNull RecyclerView recyclerView,
+                            @NonNull UnionTypeAdapter adapter) {
             super(recyclerView, adapter);
             mActivity = activity;
         }
@@ -139,6 +147,7 @@ public interface Host {
             return null;
         }
 
+        @NonNull
         @Override
         public LayoutInflater getLayoutInflater() {
             LayoutInflater inflater = null;
@@ -157,7 +166,9 @@ public interface Host {
 
         private final Host mHost;
 
-        public HostWrapper(Host host, RecyclerView recyclerView, UnionTypeAdapter adapter) {
+        public HostWrapper(Host host,
+                           @NonNull RecyclerView recyclerView,
+                           @NonNull UnionTypeAdapter adapter) {
             super(recyclerView, adapter);
             mHost = host;
         }
