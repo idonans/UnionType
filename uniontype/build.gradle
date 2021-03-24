@@ -9,7 +9,7 @@ android {
         targetSdkVersion rootProject.ext.bcfg.ver.target_sdk
         versionCode rootProject.ext.bcfg.ver.versionCode
         versionName rootProject.ext.bcfg.ver.versionName
-        buildConfigField("String", "LIB_NAME", "\"Core\"")
+        buildConfigField("String", "LIB_NAME", "\"UnionType\"")
         buildConfigField("int", "LIB_VERSION_CODE", "$versionCode")
         buildConfigField("String", "LIB_VERSION_NAME", "\"$versionName\"")
 
