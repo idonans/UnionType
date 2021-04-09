@@ -5,7 +5,7 @@ android {
     buildToolsVersion rootProject.ext.bcfg.ver.build_tools
 
     defaultConfig {
-        applicationId "com.idonans.example.uniontype"
+        applicationId "io.github.idonans.example.uniontype"
         minSdkVersion rootProject.ext.bcfg.ver.min_sdk
         targetSdkVersion rootProject.ext.bcfg.ver.target_sdk
         versionCode rootProject.ext.bcfg.ver.versionCode
