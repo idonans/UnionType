@@ -1,4 +1,4 @@
-package com.idonans.example.uniontype;
+package io.github.idonans.example.uniontype;
 
 import androidx.appcompat.app.AppCompatActivity;
 

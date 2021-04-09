@@ -37,5 +37,4 @@ dependencies {
     api rootProject.ext.bcfg.deps.idonans_lang
 }
 
-// apply from: ('bintray.gradle')
-apply from: ('mavenLocal.gradle')
+apply from: rootProject.file('gradle-mvn-push.gradle')

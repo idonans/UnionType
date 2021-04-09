@@ -20,8 +20,5 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-// bintray upload command
-// ./gradlew :uniontype:clean :uniontype:install :uniontype:bintrayUpload
-
-// maven local command
-// ./gradlew :uniontype:clean :uniontype:uploadArchives
+// maven center publish
+// ./gradlew :uniontype:clean :uniontype:build :uniontype:uploadArchives

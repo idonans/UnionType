@@ -1,2 +1,1 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.idonans.uniontype" />
+<manifest package="io.github.idonans.uniontype" />

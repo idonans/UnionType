@@ -1,4 +1,4 @@
-package com.idonans.uniontype;
+package io.github.idonans.uniontype;
 
 import android.view.ViewGroup;
 

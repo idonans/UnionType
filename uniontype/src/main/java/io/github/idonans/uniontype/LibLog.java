@@ -1,4 +1,4 @@
-package com.idonans.uniontype;
+package io.github.idonans.uniontype;
 
 import android.util.Log;
 
@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
  * @author idonans
  * @version 1.2
  */
-public class UnionTypeLog {
+public class LibLog {
 
     private static final InternalLibLog INTERNAL_LIB_LOG = new InternalLibLog(
             BuildConfig.LIB_NAME,
