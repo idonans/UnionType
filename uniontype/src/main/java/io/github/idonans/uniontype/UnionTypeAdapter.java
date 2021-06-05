@@ -88,6 +88,24 @@ public class UnionTypeAdapter extends RecyclerView.Adapter<UnionTypeViewHolder> 
         return mData.getReadOnly().size();
     }
 
+    public int getGroupItemsSize(int group) {
+        return mData.getReadOnly().getGroupItemsSize(group);
+    }
+
+    public int getGroupPositionStart(int group) {
+        return mData.getReadOnly().getGroupPositionStart(group);
+    }
+
+    @Nullable
+    public int[] getGroupAndPosition(int position) {
+        return mData.getReadOnly().getGroupAndPosition(position);
+    }
+
+    @Nullable
+    public UnionTypeItemObject getGroupItem(int group, int positionInGroup) {
+        return mData.getReadOnly().getGroupItem(group, positionInGroup);
+    }
+
     /**
      * 加载上一页
      */

@@ -205,11 +205,6 @@ public class AsyncGroupArrayList {
             mGroupArrayListReadOnly = new GroupArrayList(groupArrayList);
         }
 
-        @Nullable
-        public List<UnionTypeItemObject> getGroupItems(int group) {
-            return mGroupArrayListReadOnly.getGroupItems(group);
-        }
-
         public int getGroupItemsSize(int group) {
             return mGroupArrayListReadOnly.getGroupItemsSize(group);
         }
