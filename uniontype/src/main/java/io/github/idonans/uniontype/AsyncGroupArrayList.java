@@ -116,6 +116,11 @@ public class AsyncGroupArrayList {
             }, detectMoves && !forbiddenMoves);
 
             Threads.postUi(() -> {
+                for (Transaction transaction : transactionList) {
+                    if (transaction.mBatchCommitStartCallback != null) {
+                        transaction.mBatchCommitStartCallback.run();
+                    }
+                }
                 synchronized (mTransactionActionQueue) {
                     mGroupArrayListOrigin = newList;
                     mReadOnly = readOnly;
@@ -123,8 +128,8 @@ public class AsyncGroupArrayList {
                 }
                 diffResult.dispatchUpdatesTo(mListUpdateCallback);
                 for (Transaction transaction : transactionList) {
-                    if (transaction.mCommitCallback != null) {
-                        transaction.mCommitCallback.run();
+                    if (transaction.mBatchCommitEndCallback != null) {
+                        transaction.mBatchCommitEndCallback.run();
                     }
                 }
             });
@@ -150,7 +155,9 @@ public class AsyncGroupArrayList {
         @NonNull
         private final List<Action> mActionList = new ArrayList<>();
         @Nullable
-        private Runnable mCommitCallback;
+        private Runnable mBatchCommitStartCallback;
+        @Nullable
+        private Runnable mBatchCommitEndCallback;
 
         private boolean mCommit;
         private boolean mDetectMoves;
@@ -183,10 +190,16 @@ public class AsyncGroupArrayList {
             this.commit(null);
         }
 
-        public void commit(@Nullable Runnable commitCallback) {
+        public void commit(@Nullable Runnable batchCommitEndCallback) {
+            this.commit(null, batchCommitEndCallback);
+        }
+
+        public void commit(@Nullable Runnable batchCommitStartCallback,
+                           @Nullable Runnable batchCommitEndCallback) {
             Preconditions.checkArgument(!mCommit);
             mCommit = true;
-            mCommitCallback = commitCallback;
+            mBatchCommitStartCallback = batchCommitStartCallback;
+            mBatchCommitEndCallback = batchCommitEndCallback;
             mAsyncGroupArrayList.commit(this);
         }
 
