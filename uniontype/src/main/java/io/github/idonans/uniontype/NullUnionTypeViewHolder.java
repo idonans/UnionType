@@ -17,7 +17,7 @@ public class NullUnionTypeViewHolder extends UnionTypeViewHolder {
     }
 
     @Override
-    public void onBind(int position, @NonNull Object itemObject) {
+    public void onBindUpdate() {
     }
 
     private static View createNullView(Context context) {

@@ -1,6 +1,7 @@
 package io.github.idonans.uniontype;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.Objects;
 
@@ -11,9 +12,10 @@ import java.util.Objects;
 public class UnionTypeItemObject {
 
     public final int unionType;
+    @Nullable
     public Object itemObject;
 
-    public UnionTypeItemObject(int unionType, Object itemObject) {
+    public UnionTypeItemObject(int unionType, @Nullable Object itemObject) {
         this.unionType = unionType;
         this.itemObject = itemObject;
     }
@@ -54,7 +56,7 @@ public class UnionTypeItemObject {
         return false;
     }
 
-    public static UnionTypeItemObject valueOf(int unionType, Object itemObject) {
+    public static UnionTypeItemObject valueOf(int unionType, @Nullable Object itemObject) {
         return new UnionTypeItemObject(unionType, itemObject);
     }
 
