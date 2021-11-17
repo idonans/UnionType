@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import io.github.idonans.core.thread.TaskQueue;
 import io.github.idonans.core.thread.Threads;
@@ -53,6 +54,11 @@ public class AsyncGroupArrayList {
         synchronized (mTransactionListLock) {
             mTransactionList.add(transaction);
         }
+
+        if (mTransactionActionQueue.getCurrentCount() > 3) {
+            return;
+        }
+
         mTransactionActionQueue.skipQueue();
         mTransactionActionQueue.enqueue(new TransactionAction());
     }
@@ -115,35 +121,30 @@ public class AsyncGroupArrayList {
                 }
             }, detectMoves && !forbiddenMoves);
 
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
             Threads.postUi(() -> {
                 for (Transaction transaction : transactionList) {
                     if (transaction.mBatchCommitStartCallback != null) {
                         transaction.mBatchCommitStartCallback.run();
                     }
                 }
-                synchronized (mTransactionActionQueue) {
-                    mGroupArrayListOrigin = newList;
-                    mReadOnly = readOnly;
-                    mTransactionActionQueue.notify();
-                }
+
+                mGroupArrayListOrigin = newList;
+                mReadOnly = readOnly;
+
                 diffResult.dispatchUpdatesTo(mListUpdateCallback);
                 for (Transaction transaction : transactionList) {
                     if (transaction.mBatchCommitEndCallback != null) {
                         transaction.mBatchCommitEndCallback.run();
                     }
                 }
+                countDownLatch.countDown();
             });
-            synchronized (mTransactionActionQueue) {
-                int loop = 0;
-                final long timeStart = System.currentTimeMillis();
-                while (mReadOnly != readOnly) {
-                    UnionTypeLog.v("TransactionActionQueue[%s] wait diff result post success loop:%s, time interval ms:%s", this, loop, System.currentTimeMillis() - timeStart);
-                    try {
-                        mTransactionActionQueue.wait(1000);
-                    } catch (Throwable e) {
-                        // ignore
-                    }
-                }
+
+            try {
+                countDownLatch.await();
+            } catch (Throwable e) {
+                e.printStackTrace();
             }
         }
     }
