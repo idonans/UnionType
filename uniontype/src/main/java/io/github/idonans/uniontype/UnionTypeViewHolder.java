@@ -14,7 +14,7 @@ public abstract class UnionTypeViewHolder extends RecyclerView.ViewHolder {
     @NonNull
     public final Host host;
     @Nullable
-    public Object itemObject;
+    public UnionTypeItemObject unionTypeItemObject;
 
     public UnionTypeViewHolder(@NonNull Host host, @LayoutRes int layout) {
         this(host, host.getLayoutInflater().inflate(layout, host.getRecyclerView(), false));
@@ -25,37 +25,45 @@ public abstract class UnionTypeViewHolder extends RecyclerView.ViewHolder {
         this.host = host;
     }
 
-    public final void onBind(@Nullable Object itemObject) {
-        this.itemObject = itemObject;
+    public final void onBind(@Nullable UnionTypeItemObject unionTypeItemObject) {
+        this.unionTypeItemObject = unionTypeItemObject;
         onBindUpdate();
     }
 
     public abstract void onBindUpdate();
 
+    @Nullable
+    protected <T> T getItemObject(@NonNull Class<T> clazz) {
+        if (this.unionTypeItemObject == null) {
+            return null;
+        }
+        return this.unionTypeItemObject.getItemObject(clazz);
+    }
+
     /**
      * 一个 UnionTypeViewHolder 只对应一个 UnionType
      *
-     * @return 当前 UnionTypeViewHolder 应当显示的 UnionType. 默认返回 {@link RecyclerView#INVALID_TYPE}
+     * @return 当前 UnionTypeViewHolder 应当显示的 UnionType. 默认返回 {@link UnionTypeMapper#UNION_TYPE_NULL}
      * @see UnionTypeItemObject
      */
     public int getBestUnionType() {
-        return RecyclerView.INVALID_TYPE;
+        return UnionTypeMapper.UNION_TYPE_NULL;
     }
 
     /**
      * 用于检查当前 ViewHolder 的 type 是否匹配，如果不匹配（返回 false），会调用 {@link #notifySelfChanged()}.
-     * 如果当前 bestUnionType 或者 itemViewType 是 {@link RecyclerView#INVALID_TYPE}, 则总是返回 true.
+     * 如果当前 bestUnionType 或者 itemViewType 是 {@link UnionTypeMapper#UNION_TYPE_NULL}, 则总是返回 true.
      *
      * @return 如果 UnionType 与实际渲染值匹配返回 true, 否则返回 false.
      */
     public boolean validateUnionType() {
         final int showUnionType = getItemViewType();
-        if (showUnionType == RecyclerView.INVALID_TYPE) {
+        if (showUnionType == UnionTypeMapper.UNION_TYPE_NULL) {
             return true;
         }
 
         final int bestUnionType = getBestUnionType();
-        if (bestUnionType == RecyclerView.INVALID_TYPE) {
+        if (bestUnionType == UnionTypeMapper.UNION_TYPE_NULL) {
             return true;
         }
 

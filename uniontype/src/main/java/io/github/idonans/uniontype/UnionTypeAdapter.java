@@ -55,9 +55,9 @@ public class UnionTypeAdapter extends RecyclerView.Adapter<UnionTypeViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull UnionTypeViewHolder holder, int position) {
-        UnionTypeItemObject itemObject = getItem(position);
-        if (itemObject != null) {
-            holder.onBind(itemObject.itemObject);
+        UnionTypeItemObject unionTypeItemObject = getItem(position);
+        if (unionTypeItemObject != null) {
+            holder.onBind(unionTypeItemObject);
         }
 
         if (mOnLoadPrePageListener != null) {

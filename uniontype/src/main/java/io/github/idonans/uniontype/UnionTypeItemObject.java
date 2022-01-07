@@ -9,15 +9,30 @@ import java.util.Objects;
  * {@linkplain DeepDiff}
  * {@linkplain androidx.recyclerview.widget.DiffUtil}
  */
-public class UnionTypeItemObject {
+public final class UnionTypeItemObject {
 
-    public final int unionType;
+    public int unionType;
     @Nullable
     public Object itemObject;
 
     public UnionTypeItemObject(int unionType, @Nullable Object itemObject) {
         this.unionType = unionType;
         this.itemObject = itemObject;
+    }
+
+    public void update(int unionType, @Nullable Object itemObject) {
+        this.unionType = unionType;
+        this.itemObject = itemObject;
+    }
+
+    @Nullable
+    public <T> T getItemObject(@NonNull Class<T> clazz) {
+        if (clazz.isInstance(this.itemObject)) {
+            //noinspection unchecked
+            return (T) this.itemObject;
+        }
+
+        return null;
     }
 
     /**
@@ -54,10 +69,6 @@ public class UnionTypeItemObject {
         }
 
         return false;
-    }
-
-    public static UnionTypeItemObject valueOf(int unionType, @Nullable Object itemObject) {
-        return new UnionTypeItemObject(unionType, itemObject);
     }
 
 }
