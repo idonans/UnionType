@@ -3,15 +3,15 @@ plugins {
 }
 
 android {
-    compileSdk rootProject.ext.bcfg.ver.target_sdk
+    compileSdk 31
 
     defaultConfig {
         applicationId "io.github.idonans.example.uniontype"
 
-        minSdk rootProject.ext.bcfg.ver.min_sdk
-        targetSdk rootProject.ext.bcfg.ver.target_sdk
-        versionCode rootProject.ext.bcfg.ver.versionCode
-        versionName rootProject.ext.bcfg.ver.versionName
+        minSdk 21
+        targetSdk 31
+        versionCode rootProject.ext.gitVersionCode
+        versionName rootProject.ext.gitVersionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -32,5 +32,5 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':uniontype')
-    implementation rootProject.ext.bcfg.deps.androidx_constraintlayout
+    implementation "androidx.constraintlayout:constraintlayout:2.1.1"
 }

@@ -3,13 +3,13 @@ plugins {
 }
 
 android {
-    compileSdk rootProject.ext.bcfg.ver.target_sdk
+    compileSdk 31
 
     defaultConfig {
-        minSdk rootProject.ext.bcfg.ver.min_sdk
-        targetSdk rootProject.ext.bcfg.ver.target_sdk
-        versionCode rootProject.ext.bcfg.ver.versionCode
-        versionName rootProject.ext.bcfg.ver.versionName
+        minSdk 21
+        targetSdk 31
+        versionCode rootProject.ext.gitVersionCode
+        versionName rootProject.ext.gitVersionName
 
         buildConfigField("String", "LIB_NAME", "\"$POM_ARTIFACT_ID\"")
         buildConfigField("int", "LIB_VERSION_CODE", "$versionCode")
@@ -34,10 +34,10 @@ android {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-    api rootProject.ext.bcfg.deps.androidx_appcompat
-    api rootProject.ext.bcfg.deps.androidx_recyclerview
-    api rootProject.ext.bcfg.deps.idonans_appcontext
-    api rootProject.ext.bcfg.deps.idonans_lang
+    api "androidx.appcompat:appcompat:1.3.1"
+    api "androidx.recyclerview:recyclerview:1.2.0"
+    api "io.github.idonans.appcontext:appcontext:2.2.4"
+    api "io.github.idonans.lang:lang:2.0.11"
 }
 
 apply from: rootProject.file('gradle-mvn-push.gradle')

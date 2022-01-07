@@ -1,11 +1,10 @@
 buildscript {
     apply from: 'git.version.gradle'
-    apply from: 'versions.gradle'
-    rootProject.ext.bcfg.addRepos(repositories)
+    rootProject.ext.addRepos(repositories)
     dependencies {
-        classpath rootProject.ext.bcfg.deps.android_gradle_plugin
-        classpath rootProject.ext.bcfg.deps.kotlin_gradle_plugin
-        classpath rootProject.ext.bcfg.deps.proto_gradle_plugin
+        classpath "com.android.tools.build:gradle:7.0.3"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.0"
+        classpath "com.google.protobuf:protobuf-gradle-plugin:0.8.15"
     }
     repositories {
         google()
@@ -13,7 +12,7 @@ buildscript {
 }
 
 allprojects {
-    rootProject.ext.bcfg.addRepos(repositories)
+    rootProject.ext.addRepos(repositories)
 }
 
 task clean(type: Delete) {

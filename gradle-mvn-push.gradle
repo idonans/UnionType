@@ -19,7 +19,7 @@ afterEvaluate { project ->
             maven(MavenPublication) {
                 groupId = GROUP
                 artifactId = POM_ARTIFACT_ID
-                version = rootProject.ext.bcfg.ver.versionName
+                version = rootProject.ext.gitVersionName
 
                 switch (POM_PACKAGING) {
                     case "aar":
@@ -68,7 +68,7 @@ afterEvaluate { project ->
         repositories {
             maven {
                 name = "maven central"
-                if (rootProject.ext.bcfg.ver.versionName.endsWith("-SNAPSHOT")) {
+                if (rootProject.ext.gitVersionName.endsWith("-SNAPSHOT")) {
                     url = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
                 } else {
                     url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
