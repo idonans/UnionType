@@ -33,7 +33,7 @@ public abstract class UnionTypeViewHolder extends RecyclerView.ViewHolder {
     public abstract void onBindUpdate();
 
     @Nullable
-    protected <T> T getItemObject(@NonNull Class<T> clazz) {
+    public <T> T getItemObject(@NonNull Class<T> clazz) {
         if (this.unionTypeItemObject == null) {
             return null;
         }
@@ -75,6 +75,7 @@ public abstract class UnionTypeViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void notifySelfChanged() {
+        //noinspection deprecation
         final int position = getAdapterPosition();
         if (position >= 0) {
             final RecyclerView.Adapter<?> adapter = host.getRecyclerView().getAdapter();
