@@ -60,13 +60,16 @@ public class GroupArrayList {
 
     /**
      * 删除指定组
+     *
+     * @param group 分组
      */
     public void removeGroup(int group) {
         mData.remove(group);
     }
 
     /**
-     * 获取指定组在全局所在的开始位置, 总是 <code>>=0</code>
+     * @param group 分组
+     * @return 获取指定组在全局所在的开始位置, 总是 <code>>=0</code>
      */
     public int getGroupPositionStart(int group) {
         int position = 0;
@@ -155,6 +158,9 @@ public class GroupArrayList {
      *
      * </code>
      * </pre>
+     *
+     * @param position 全局位置
+     * @return 指定位置所在的组以及组内的位置
      */
     public int[] getGroupAndPosition(int position) {
         if (position < 0) {
