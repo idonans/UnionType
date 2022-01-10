@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import io.github.idonans.core.thread.Threads;
+import io.github.idonans.core.thread.BatchQueue;
 
 public abstract class UnionTypeViewHolder extends RecyclerView.ViewHolder {
 
@@ -16,6 +16,8 @@ public abstract class UnionTypeViewHolder extends RecyclerView.ViewHolder {
     @Nullable
     public UnionTypeItemObject unionTypeItemObject;
 
+    private final BatchQueue<Boolean> mNotifySelfChangedQueue = new BatchQueue<>(true);
+
     public UnionTypeViewHolder(@NonNull Host host, @LayoutRes int layout) {
         this(host, host.getLayoutInflater().inflate(layout, host.getRecyclerView(), false));
     }
@@ -23,6 +25,13 @@ public abstract class UnionTypeViewHolder extends RecyclerView.ViewHolder {
     public UnionTypeViewHolder(@NonNull Host host, @NonNull View itemView) {
         super(itemView);
         this.host = host;
+
+        mNotifySelfChangedQueue.setMergeFunction((payloadList, payload) -> {
+            payloadList.clear();
+            payloadList.add(payload);
+            return payloadList;
+        });
+        mNotifySelfChangedQueue.setConsumer(objects -> notifySelfChangedInternal());
     }
 
     public final void onBind(@Nullable UnionTypeItemObject unionTypeItemObject) {
@@ -68,24 +77,32 @@ public abstract class UnionTypeViewHolder extends RecyclerView.ViewHolder {
         }
 
         if (showUnionType != bestUnionType) {
-            Threads.postUi(this::notifySelfChanged);
+            notifySelfChanged();
             return false;
         }
         return true;
     }
 
     public void notifySelfChanged() {
-        //noinspection deprecation
-        final int position = getAdapterPosition();
+        mNotifySelfChangedQueue.add(Boolean.TRUE);
+    }
+
+    private void notifySelfChangedInternal() {
+        final int position = getBindingAdapterPosition();
         if (position >= 0) {
-            final RecyclerView.Adapter<?> adapter = host.getRecyclerView().getAdapter();
+            final RecyclerView recyclerView = host.getRecyclerView();
+            if (recyclerView.isLayoutSuppressed() || recyclerView.isComputingLayout()) {
+                notifySelfChanged();
+                return;
+            }
+            final RecyclerView.Adapter<?> adapter = recyclerView.getAdapter();
             if (adapter != null) {
                 adapter.notifyItemChanged(position);
             } else {
-                UnionTypeLog.v("ignore. notifySelfChanged adapter is null. [%s]", getClass().getName());
+                UnionTypeLog.v("ignore. notifySelfChangedInternal adapter is null. [%s]", getClass().getName());
             }
         } else {
-            UnionTypeLog.v("ignore. notifySelfChanged position is:%s. [%s]", position, getClass().getName());
+            UnionTypeLog.v("ignore. notifySelfChangedInternal position is:%s. [%s]", position, getClass().getName());
         }
     }
 
