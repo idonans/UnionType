@@ -6,8 +6,8 @@ import androidx.annotation.Nullable;
 import java.util.Objects;
 
 /**
- * {@linkplain DeepDiff}
- * {@linkplain androidx.recyclerview.widget.DiffUtil}
+ * @see DeepDiff
+ * @see androidx.recyclerview.widget.DiffUtil
  */
 public final class UnionTypeItemObject {
 
@@ -25,10 +25,10 @@ public final class UnionTypeItemObject {
         this.itemObject = itemObject;
     }
 
+    @SuppressWarnings("unchecked")
     @Nullable
     public <T> T getItemObject(@NonNull Class<T> clazz) {
         if (clazz.isInstance(this.itemObject)) {
-            //noinspection unchecked
             return (T) this.itemObject;
         }
 
@@ -36,7 +36,9 @@ public final class UnionTypeItemObject {
     }
 
     /**
-     * {@linkplain androidx.recyclerview.widget.DiffUtil}
+     * @param other 待比较的目标对象
+     * @return 如果可以复用同一个 ViewHolder 返回 true, 否则返回 false.
+     * @see androidx.recyclerview.widget.DiffUtil.Callback#areItemsTheSame(int, int)
      */
     public boolean isSameItem(@NonNull UnionTypeItemObject other) {
         if (this.unionType != other.unionType) {
@@ -54,7 +56,9 @@ public final class UnionTypeItemObject {
     }
 
     /**
-     * {@linkplain androidx.recyclerview.widget.DiffUtil}
+     * @param other 待比较的目标对象
+     * @return 如果需要在复用同一个 ViewHolder 时需要触发 update, 返回 false. 否则返回 true.
+     * @see androidx.recyclerview.widget.DiffUtil.Callback#areContentsTheSame(int, int)
      */
     public boolean isSameContent(@NonNull UnionTypeItemObject other) {
         if (this.unionType != other.unionType) {
