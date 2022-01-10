@@ -3,6 +3,7 @@ package io.github.idonans.uniontype;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.collection.SparseArrayCompat;
+import androidx.core.util.Predicate;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,13 +30,18 @@ public class GroupArrayList {
         }
     }
 
+    /**
+     * @param group 分组
+     * @return 获取指定分组
+     */
     @Nullable
     public List<UnionTypeItemObject> getGroupItems(int group) {
         return mData.get(group);
     }
 
     /**
-     * 获得指定组下的数据数量，如果该组下没有数据，返回0．
+     * @param group 分组
+     * @return 获得指定组下的数据数量，如果该组下没有数据，返回 0．
      */
     public int getGroupItemsSize(int group) {
         final ArrayListWrapper groupItems = mData.get(group);
@@ -48,6 +54,8 @@ public class GroupArrayList {
 
     /**
      * 清空指定组下的数据
+     *
+     * @param group 分组
      */
     public void clearGroupItems(int group) {
         final ArrayListWrapper groupItems = mData.get(group);
@@ -69,7 +77,7 @@ public class GroupArrayList {
 
     /**
      * @param group 分组
-     * @return 获取指定组在全局所在的开始位置, 总是 <code>>=0</code>
+     * @return 获取指定组在全局所在的开始位置, 总是 <code>&gt;= 0</code>
      */
     public int getGroupPositionStart(int group) {
         int position = 0;
@@ -92,6 +100,10 @@ public class GroupArrayList {
 
     /**
      * 清除指定组下指定位置的数据
+     *
+     * @param group           分组
+     * @param positionInGroup 组内的位置
+     * @return 被删除的目标位置的值
      */
     @Nullable
     public UnionTypeItemObject removeGroupItem(int group, int positionInGroup) {
@@ -113,6 +125,10 @@ public class GroupArrayList {
 
     /**
      * 清除指定组下指定位置区域的数据
+     *
+     * @param group           分组
+     * @param positionInGroup 组内的位置
+     * @param size            删除的数量
      */
     public void removeGroupItems(int group, int positionInGroup, int size) {
         if (positionInGroup < 0) {
@@ -142,8 +158,8 @@ public class GroupArrayList {
      * <pre>
      * 获取指定位置所在的组以及组内的位置，如果该位置没有找到，返回 <code>null</code>.
      * 否则返回一个长度为 2 的整数数组，其中
-     * [0] 标识所在的组，总是 <code>>=0</code>
-     * [1] 标识在该组内所处的位置，总是 <code>>=0</code>
+     * [0] 标识所在的组，总是 <code>&gt;= 0</code>
+     * [1] 标识在该组内所处的位置，总是 <code>&gt;= 0</code>
      *
      * 使用示例：
      * <code>
@@ -191,6 +207,8 @@ public class GroupArrayList {
 
     /**
      * 清除指定位置的数据
+     *
+     * @param position 全局位置
      */
     public void removeItem(int position) {
         int[] groupAndPosition = getGroupAndPosition(position);
@@ -204,8 +222,11 @@ public class GroupArrayList {
     /**
      * 清除指定位置附近的数据.
      * Filter 用来匹配需要删除的数据，所删除的数据总是在同一组并且相邻
+     *
+     * @param position 全局位置
+     * @param filter   待删除的元素的条件选择器
      */
-    public void removeItems(int position, Filter filter) {
+    public void removeItems(int position, Predicate<UnionTypeItemObject> filter) {
         int[] groupAndPosition = getGroupAndPosition(position);
         if (groupAndPosition == null) {
             return;
@@ -218,7 +239,7 @@ public class GroupArrayList {
         int start = -1;
         for (int i = groupAndPosition[1]; i >= 0; i--) {
             UnionTypeItemObject item = getGroupItem(groupAndPosition[0], i);
-            if (!filter.filter(item)) {
+            if (!filter.test(item)) {
                 break;
             }
             start = i;
@@ -231,7 +252,7 @@ public class GroupArrayList {
         int end = groupAndPosition[1];
         for (int i = end + 1; i < groupItemsSize; i++) {
             UnionTypeItemObject item = getGroupItem(groupAndPosition[0], i);
-            if (!filter.filter(item)) {
+            if (!filter.test(item)) {
                 break;
             }
             end = i;
@@ -239,11 +260,6 @@ public class GroupArrayList {
 
         // 删除[start, end]区间的数据
         removeGroupItems(groupAndPosition[0], start, end - start + 1);
-    }
-
-    public interface Filter {
-        @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-        boolean filter(UnionTypeItemObject item);
     }
 
     /**
@@ -278,6 +294,10 @@ public class GroupArrayList {
         return count;
     }
 
+    /**
+     * @param group 分组
+     * @param items 组内数据
+     */
     public void setGroupItems(int group, @Nullable Collection<UnionTypeItemObject> items) {
         if (items == null) {
             clearGroupItems(group);
@@ -288,6 +308,10 @@ public class GroupArrayList {
 
     /**
      * 向指定组中的指定位置添加数据
+     *
+     * @param group           分组
+     * @param positionInGroup 组内的位置
+     * @param items           待添加的数据
      */
     public void insertGroupItems(int group, int positionInGroup, @Nullable Collection<UnionTypeItemObject> items) {
         if (items != null && items.size() > 0) {
@@ -311,6 +335,9 @@ public class GroupArrayList {
 
     /**
      * 向指定组中添加数据
+     *
+     * @param group 分组
+     * @param items 待添加的数据
      */
     public void appendGroupItems(int group, @Nullable Collection<UnionTypeItemObject> items) {
         if (items != null && items.size() > 0) {
@@ -325,7 +352,9 @@ public class GroupArrayList {
     }
 
     /**
-     * 如果没有找到，返回 <code>null</code>.
+     * @param group           分组
+     * @param positionInGroup 组内的位置
+     * @return 如果没有找到，返回 <code>null</code>.
      */
     @Nullable
     public UnionTypeItemObject getGroupItem(int group, int positionInGroup) {
@@ -346,7 +375,8 @@ public class GroupArrayList {
     }
 
     /**
-     * 如果没有找到，返回 <code>null</code>.
+     * @param position 全局位置
+     * @return 如果没有找到，返回 <code>null</code>.
      */
     @Nullable
     public UnionTypeItemObject getItem(int position) {
